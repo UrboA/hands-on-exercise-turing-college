@@ -1,0 +1,52 @@
+# Bugs to Fix
+[ ] Running main.py results in an error. Figure out why, and fix it.
+
+# Required Refactoring
+[ ] Add comprehensive type hints and make mypy pass in strict mode (`mypy dndgame --strict`)
+    [ ] Add proper types for all class attributes
+    [ ] Add return types and parameter types for all methods
+    [ ] Fix any type-related issues mypy finds
+[ ] Code is not optimized for adding a new character class. Fix this, and add a new character.
+
+[ ] Input validation for user input
+
+[ ] Improve OOP Structure:
+    [ ] Create an Enemy class
+    [ ] Refactor Character and Enemy classes to use a common Entity base class
+    [ ] Create Goblin class inheriting from Enemy
+    [ ] Update the Combat class to use the new classes
+    [ ] Replace simple_combat function with Combat class usage
+
+[ ] Convert loops to functional programming
+    [ ] Use list comprehensions where appropriate
+    [ ] Use map()/filter() where appropriate
+
+[ ] Add complete docstrings
+    [ ] Class docstrings explaining purpose and attributes
+    [ ] Method docstrings with parameters and return types
+    [ ] Add examples in docstrings where helpful
+
+# Features to Add
+[ ] Add critical hit system (natural roll of 20)
+[ ] Create Adventure class to manage game flow
+    [ ] Move game loop from main.py to Adventure class
+    [ ] Design your own structure for managing:
+        - Character creation
+        - Combat encounters
+        - Game menu and choices
+        - Character display
+        - Any other game logic, or ideas you have
+
+# Testing
+[ ] Add comprehensive unit tests
+    [ ] Test dice rolling mechanics
+    [ ] Test character creation and stats
+    [ ] Test combat system
+    [ ] Mock random number generation for reliable tests
+    [ ] Achieve 90% test coverage
+
+# Optional Stretch Goals
+[ ] Add different weapon types with different damage dice
+[ ] Add simple spellcasting system
+[ ] Add an experience points and leveling system
+[ ] (Advanced) Create a DungeonMaster class which uses OpenAI's API to narrate the game (start simple with just narrating the comabt, extend it to narrate the choices and actions of the players)
