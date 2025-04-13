@@ -10,7 +10,6 @@
 [ ] Improve OOP Structure:
     [ ] Create an Enemy class
     [ ] Refactor Character and Enemy classes to use a common Entity base class
-    [ ] Create Goblin class inheriting from Enemy
     [ ] Update the Combat class to use the new classes
     [ ] Replace simple_combat function with Combat class usage.
     [ ] Ensure that the Goblin also attacks the player. What happens if the player has 0 HP?
