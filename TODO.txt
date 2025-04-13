@@ -1,6 +1,3 @@
-# Bugs to Fix
-[ ] Running main.py results in an error. Figure out why, and fix it.
-
 # Required Refactoring
 [ ] Add comprehensive type hints and make mypy pass in strict mode (`mypy dndgame --strict`)
     [ ] Add proper types for all class attributes
@@ -15,7 +12,8 @@
     [ ] Refactor Character and Enemy classes to use a common Entity base class
     [ ] Create Goblin class inheriting from Enemy
     [ ] Update the Combat class to use the new classes
-    [ ] Replace simple_combat function with Combat class usage
+    [ ] Replace simple_combat function with Combat class usage.
+    [ ] Ensure that the Goblin also attacks the player. What happens if the player has 0 HP?
 
 [ ] Convert loops to functional programming
     [ ] Use list comprehensions where appropriate
@@ -27,23 +25,20 @@
     [ ] Add examples in docstrings where helpful
 
 # Features to Add
-[ ] Add critical hit system (natural roll of 20)
 [ ] Create Adventure class to manage game flow
-    [ ] Move game loop from main.py to Adventure class
+    [ ] Move some of the game loop from main.py to Adventure class (you want to be able to run multiple differentadventures without having to restart the game)
     [ ] Design your own structure for managing:
-        - Character creation
-        - Combat encounters
+        - Enemy encounters
+        - Combating enemies
         - Game menu and choices
         - Character display
         - Any other game logic, or ideas you have
 
 # Testing
-[ ] Add comprehensive unit tests
-    [ ] Test dice rolling mechanics
-    [ ] Test character creation and stats
-    [ ] Test combat system
-    [ ] Mock random number generation for reliable tests
-    [ ] Achieve 90% test coverage
+[ ] Add comprehensive unit tests (have a look at the test_dice.py file for inspiration)
+    [ ] Test the character class
+    [ ] Test the combat system
+    [ ] Achieve at least 90% test coverage
 
 # Optional Stretch Goals
 [ ] Add different weapon types with different damage dice
