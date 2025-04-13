@@ -2,15 +2,14 @@ from dndgame.dice import roll
 
 
 class Character:
-    def __init__(self, name, race):
+    def __init__(self, name, race, base_hp):
         self.name = name
-        self.stats = {}
-        self.hp = 0
         self.race = race
-        self.inventory = []
+        self.stats = {}
+        self.base_hp = base_hp
+        self.hp = 0
+        self.max_hp = 0
         self.level = 1
-        self.spell_slots = {}
-        self.skills = []
         self.armor_class = 10
 
     def get_modifier(self, stat):
@@ -18,17 +17,14 @@ class Character:
         return (self.stats[stat] - 10) // 2
 
     def roll_stats(self):
-        print("Rolling stats...")
+        print("Rolling stats...\n")
         stats = ["STR", "DEX", "CON", "INT", "WIS", "CHA"]
         for stat in stats:
+            print(f"Rolling {stat}...")
             self.stats[stat] = roll(6, 3)
 
-    def get_available_skills(self):
-        skills = []
-        for skill in self.skills:
-            if self.level >= skill.level_requirement:
-                skills.append(skill)
-        return skills
+        self.max_hp = self.base_hp + self.get_modifier("CON")
+        self.hp = self.max_hp
 
     def apply_racial_bonuses(self):
         if self.race == "Dwarf":

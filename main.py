@@ -11,9 +11,10 @@ def create_character():
     print("2. Elf (+2 DEX)")
     print("3. Dwarf (+2 CON)")
     race_choice = input("Enter choice (1-3): ")
+    print("\n")
     race = ["Human", "Elf", "Dwarf"][int(race_choice) - 1]
 
-    character = Character(name, race)
+    character = Character(name, race, 10)
     character.roll_stats()
     character.apply_racial_bonuses()
     return character
@@ -25,6 +26,7 @@ def display_character(character):
     for stat, value in character.stats.items():
         modifier = character.get_modifier(stat)
         print(f"{stat}: {value} ({'+' if modifier >= 0 else ''}{modifier})")
+    print(f"\nHP: {character.hp}")
 
 
 def simple_combat(player):
@@ -36,6 +38,7 @@ def simple_combat(player):
         print("\nYour turn!")
         print("1. Attack")
         print("2. Run away")
+        print()
 
         choice = input("What do you do? ")
         if choice == "1":

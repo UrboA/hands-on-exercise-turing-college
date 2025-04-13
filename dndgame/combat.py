@@ -21,9 +21,10 @@ class Combat:
         return self.initiative_order
 
     def attack(self, attacker, defender):
-        attack_roll = roll(20, 1)
+        attack_roll = roll(20, 1) + attacker.get_modifier("STR")
+        weapon_max_damage = 6
         if attack_roll >= defender.armor_class:
-            damage = attacker.get_modifier("STR")
+            damage = roll(weapon_max_damage, 1)
             defender.hp -= damage
             return damage
         return 0
