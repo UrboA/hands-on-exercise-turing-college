@@ -1,8 +1,14 @@
-# Required Refactoring
+# Refactoring
 [ ] Add comprehensive type hints and make mypy pass in strict mode (`mypy dndgame --strict`)
     [ ] Add proper types for all class attributes
     [ ] Add return types and parameter types for all methods
     [ ] Fix any type-related issues mypy finds
+
+[ ] Add complete docstrings
+    [ ] Class docstrings explaining purpose and attributes
+    [ ] Method docstrings with parameters and return types
+    [ ] Add examples in docstrings where helpful
+
 [ ] Code is not optimized for adding a new character class. Fix this, and add a new character.
 
 [ ] Input validation for user input
@@ -17,21 +23,6 @@
 [ ] Convert loops to functional programming
     [ ] Use list comprehensions where appropriate
     [ ] Use map()/filter() where appropriate
-
-[ ] Add complete docstrings
-    [ ] Class docstrings explaining purpose and attributes
-    [ ] Method docstrings with parameters and return types
-    [ ] Add examples in docstrings where helpful
-
-# Features to Add
-[ ] Create Adventure class to manage game flow
-    [ ] Move some of the game loop from main.py to Adventure class (you want to be able to run multiple differentadventures without having to restart the game)
-    [ ] Design your own structure for managing:
-        - Enemy encounters
-        - Combating enemies
-        - Game menu and choices
-        - Character display
-        - Any other game logic, or ideas you have
 
 # Testing
 [ ] Add comprehensive unit tests (have a look at the test_dice.py file for inspiration)
