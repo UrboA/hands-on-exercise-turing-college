@@ -14,8 +14,8 @@ A text-based D&D-style adventure game system that needs improvements and new fea
 
 1. Create and activate virtual environment:
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+python -m venv .venv
+source .venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
 2. Install dependencies:
