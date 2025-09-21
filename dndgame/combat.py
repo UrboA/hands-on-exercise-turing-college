@@ -2,6 +2,24 @@ from __future__ import annotations
 
 from dndgame.dice import roll
 from dndgame.entity import Entity
+from typing import TypedDict, Literal, Union, List, Tuple
+
+
+class AttackEvent(TypedDict):
+    attacker: str
+    defender: str
+    roll: int
+    crit: bool
+    dmg: int
+    defender_hp: int
+
+
+class MaxRoundsEvent(TypedDict):
+    event: Literal["max_rounds_reached"]
+    rounds: int
+
+
+LogEvent = Union[AttackEvent, MaxRoundsEvent]
 
 
 class Combat:
@@ -28,9 +46,9 @@ class Combat:
         self.player: Entity = player
         self.enemy: Entity = enemy
         self.max_rounds: int = max_rounds
-        self.log: list[dict] = []
+        self.log: List[LogEvent] = []
 
-    def run(self) -> tuple[str, list[dict]]:
+    def run(self) -> Tuple[str, List[LogEvent]]:
         """Orchestrate the combat between player and enemy.
 
         Alternates turns between entities until one dies or max_rounds
@@ -53,9 +71,9 @@ class Combat:
         }
         """
         self.log = []
-        rounds = 0
-        current_attacker = self.player
-        current_defender = self.enemy
+        rounds: int = 0
+        current_attacker: Entity = self.player
+        current_defender: Entity = self.enemy
 
         while (self.player.alive() and self.enemy.alive() and
                rounds < self.max_rounds):
