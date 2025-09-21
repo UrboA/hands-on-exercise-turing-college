@@ -1,3 +1,20 @@
+"""Entity base types used throughout the game.
+
+Provides the `Entity` abstract base class with shared attributes
+and minimal behavior for all combatants.
+
+Examples:
+    >>> from dndgame.entity import Entity
+    >>> class Dummy(Entity):
+    ...     def roll_attack(self):
+    ...         return (1, False)
+    >>> d = Dummy("Test", 5, 0, 10)
+    >>> d.alive()
+    True
+    >>> d.take(10); d.alive()
+    False
+"""
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod

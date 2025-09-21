@@ -1,3 +1,15 @@
+"""Dice rolling helpers.
+
+Pure functions to roll dice with/without advantage or disadvantage.
+
+Examples:
+    >>> from dndgame.dice import roll, roll_with_advantage
+    >>> total = roll(6, 2); isinstance(total, int)
+    True
+    >>> isinstance(roll_with_advantage(20), int)
+    True
+"""
+
 from __future__ import annotations
 
 import random

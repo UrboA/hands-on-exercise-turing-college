@@ -1,3 +1,18 @@
+"""Adventure orchestration utilities.
+
+Contains the `Adventure` class that manages encounters and story
+progression for a single-player session.
+
+Examples:
+    >>> from dndgame.character import Character
+    >>> from dndgame.adventure import Adventure
+    >>> c = Character("Hero", "Human", 10)
+    >>> c.roll_stats(); c.apply_racial_bonuses()
+    >>> adv = Adventure("Intro", "A small quest.", c)
+    >>> bool(adv.get_available_encounters_list())
+    True
+"""
+
 from __future__ import annotations
 
 from dndgame.character import Character

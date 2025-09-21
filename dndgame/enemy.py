@@ -1,3 +1,16 @@
+"""Enemy implementations and utilities.
+
+Defines the `Enemy` class derived from `Entity`, with basic combat
+behavior mirroring `Character` but without critical hits.
+
+Examples:
+    >>> from dndgame.enemy import Enemy
+    >>> goblin = Enemy("Goblin", "Goblin", 7)
+    >>> goblin.roll_stats(); goblin.apply_racial_bonuses()
+    >>> isinstance(goblin.hp, int)
+    True
+"""
+
 from __future__ import annotations
 
 from dndgame.dice import roll
