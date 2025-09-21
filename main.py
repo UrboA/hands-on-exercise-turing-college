@@ -2,6 +2,7 @@ import argparse
 import random
 
 from dndgame.character import Character
+from dndgame.combat import Combat
 from dndgame.dice import roll
 
 
@@ -43,53 +44,7 @@ def display_character(character):
     print(f"\nHP: {character.hp}")
 
 
-def simple_combat(player, auto_mode=False, max_rounds=300):
-    print("\nA goblin appears!")
-    goblin_hp = 5
-    rounds = 0
-    log = []
 
-    while goblin_hp > 0 and rounds < max_rounds:
-        rounds += 1
-        print(f"\nGoblin HP: {goblin_hp}")
-        print("\nYour turn!")
-        print("1. Attack")
-        print("2. Run away")
-        print()
-
-        if auto_mode:
-            choice = "1"  # Auto mode always attacks
-            print("Auto mode: Choosing to attack")
-        else:
-            choice = input("What do you do? ")
-
-        if choice == "1":
-            attack = roll(20, 1)
-            if attack >= 10:
-                damage = roll(4, 1)
-                goblin_hp -= damage
-                print(f"You hit for {damage} damage!")
-                log.append(f"Round {rounds}: Player hits for {damage} damage")
-            else:
-                print("You missed!")
-                log.append(f"Round {rounds}: Player misses")
-        elif choice == "2":
-            log.append(f"Round {rounds}: Player runs away")
-            return "Goblin", log
-
-    # Check if max_rounds was reached
-    if rounds >= max_rounds:
-        log.append({"event": "max_rounds_reached", "rounds": rounds})
-        # Determine winner based on HP (player wins ties)
-        if player.hp >= goblin_hp:
-            winner = "Player"
-        else:
-            winner = "Goblin"
-        return winner, log
-
-    # Normal victory
-    log.append(f"Round {rounds}: Goblin defeated!")
-    return "Player", log
 
 
 def main():
@@ -120,12 +75,8 @@ def main():
             auto_combat_count += 1
             if auto_combat_count > auto_combat_limit:
                 print(f"Auto mode: Completed {auto_combat_limit} combats, ending auto mode.")
-                print("What would you like to do?")
-                print("1. Fight a goblin")
-                print("2. View character")
-                print("3. Quit")
-                choice = "3"  # Quit after reaching combat limit
-                print("Auto mode: Choosing to quit")
+                print("Goodbye!")
+                break  # Exit the program
             else:
                 choice = "1"  # Default to fighting in auto mode
                 print(f"Auto mode: Choosing to fight goblin (combat {auto_combat_count}/{auto_combat_limit})")
@@ -133,7 +84,28 @@ def main():
             choice = input("Enter choice (1-3): ")
 
         if choice == "1":
-            winner, log = simple_combat(player, auto_mode=args.auto)
+            # Ensure the player isn't starting combat at 0 HP
+            if player.hp <= 0:
+                if args.auto:
+                    print("Auto mode: Restoring HP to full before combat.")
+                    player.hp = getattr(player, "max_hp", player.hp)
+                else:
+                    resp = input("You are at 0 HP. Rest to recover to full HP before fighting? (y/n): ").strip().lower()
+                    if resp.startswith("y"):
+                        player.hp = getattr(player, "max_hp", player.hp)
+                        print(f"{player.name} rests and recovers to {player.hp} HP.")
+                    else:
+                        print("You decide not to fight while at 0 HP.")
+                        continue
+            # Create enemy for combat
+            from dndgame.enemy import Enemy
+            enemy = Enemy("Goblin", "Goblin", 7)
+            enemy.roll_stats()
+            enemy.apply_racial_bonuses()
+
+            # Use the new Combat class
+            combat = Combat(player, enemy, max_rounds=300)
+            winner, log = combat.run()
 
             # Check if max_rounds was reached
             if log and isinstance(log[-1], dict) and log[-1].get("event") == "max_rounds_reached":
@@ -142,7 +114,7 @@ def main():
             elif winner == "Player":
                 print("You defeated the goblin!")
             else:
-                print("You ran away!")
+                print("You were defeated by the goblin!")
         elif choice == "2":
             display_character(player)
         elif choice == "3":

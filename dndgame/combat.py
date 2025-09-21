@@ -1,75 +1,108 @@
 from __future__ import annotations
 
 from dndgame.dice import roll
-from dndgame.character import Character
+from dndgame.entity import Entity
 
 
 class Combat:
-    """Manages combat between two characters.
+    """Orchestrates combat between two Entity instances.
 
-    Handles initiative rolling, attack resolution, and turn order.
+    Manages turn-based combat with proper attack resolution using Entity
+    methods and attributes.
 
     Attributes:
-        player: The player character.
-        enemy: The enemy character.
-        round: Current combat round number.
-        initiative_order: List of characters in initiative order.
+        player: The player Entity.
+        enemy: The enemy Entity.
+        max_rounds: Maximum number of rounds before forced resolution.
+        log: List of combat events.
     """
-    def __init__(self, player: Character, enemy: Character) -> None:
+
+    def __init__(self, player: Entity, enemy: Entity, max_rounds: int = 300) -> None:
         """Initialize a new combat encounter.
 
         Args:
-            player: The player character participating in combat.
-            enemy: The enemy character participating in combat.
+            player: The player Entity participating in combat.
+            enemy: The enemy Entity participating in combat.
+            max_rounds: Maximum rounds before combat is force-resolved.
         """
-        self.player: Character = player
-        self.enemy: Character = enemy
-        self.round: int = 0
-        self.initiative_order: list[Character] = []
+        self.player: Entity = player
+        self.enemy: Entity = enemy
+        self.max_rounds: int = max_rounds
+        self.log: list[dict] = []
 
-    def roll_initiative(self) -> list[Character]:
-        """Roll initiative to determine combat order.
+    def run(self) -> tuple[str, list[dict]]:
+        """Orchestrate the combat between player and enemy.
 
-        Each character rolls 1d20 + Dexterity modifier to determine
-        who acts first in combat.
+        Alternates turns between entities until one dies or max_rounds
+        is reached. Each round, the current attacker attempts to attack
+        the defender using Entity.roll_attack().
 
         Returns:
-            List of characters in initiative order (highest to lowest).
+            A tuple of (winner_name, combat_log) where winner_name is
+            either "Player" or "Enemy" and combat_log is a list of dicts
+            containing combat events.
 
-        Note:
-            The player always goes first on ties.
+        The log format for attacks:
+        {
+            "attacker": name,
+            "defender": name,
+            "roll": attack_roll,
+            "crit": is_crit,
+            "dmg": damage_dealt,
+            "defender_hp": defender_hp_after
+        }
         """
-        player_init = roll(20, 1) + self.player.get_modifier("DEX")
-        enemy_init = roll(20, 1) + self.enemy.get_modifier("DEX")
+        self.log = []
+        rounds = 0
+        current_attacker = self.player
+        current_defender = self.enemy
 
-        if player_init >= enemy_init:
-            self.initiative_order = [self.player, self.enemy]
+        while (self.player.alive() and self.enemy.alive() and
+               rounds < self.max_rounds):
+
+            rounds += 1
+
+            # Perform attack
+            attack_roll, is_crit = current_attacker.roll_attack()
+            damage = max(0, attack_roll - current_defender.defense)
+
+            # Apply damage
+            current_defender.take(damage)
+
+            # Log the attack
+            self.log.append({
+                "attacker": current_attacker.name,
+                "defender": current_defender.name,
+                "roll": attack_roll,
+                "crit": is_crit,
+                "dmg": damage,
+                "defender_hp": current_defender.hp
+            })
+
+            # Check if defender died from this attack
+            if not current_defender.alive():
+                break
+
+            # Alternate turns
+            current_attacker, current_defender = current_defender, current_attacker
+
+        # Determine winner
+        if rounds >= self.max_rounds:
+            # Max rounds reached - determine winner by HP
+            self.log.append({
+                "event": "max_rounds_reached",
+                "rounds": rounds
+            })
+
+            if self.player.hp >= self.enemy.hp:
+                winner = "Player"
+            else:
+                winner = "Enemy"
         else:
-            self.initiative_order = [self.enemy, self.player]
+            # Normal victory
+            if self.player.alive():
+                winner = "Player"
+            else:
+                winner = "Enemy"
 
-        return self.initiative_order
-
-    def attack(self, attacker: Character, defender: Character) -> int:
-        """Resolve an attack roll between two characters.
-
-        The attacker makes an attack roll (1d20 + Strength modifier) against
-        the defender's armor class. If successful, deals damage based on
-        weapon type (currently fixed at 1d6).
-
-        Args:
-            attacker: The character making the attack.
-            defender: The character being attacked.
-
-        Returns:
-            The amount of damage dealt (0 if attack missed).
-
-        Note:
-            Currently uses a fixed 1d6 weapon damage for simplicity.
-        """
-        attack_roll = roll(20, 1) + attacker.get_modifier("STR")
-        weapon_max_damage = 6
-        if attack_roll >= defender.armor_class:
-            damage = roll(weapon_max_damage, 1)
-            defender.hp -= damage
-            return damage
-        return 0
+        return winner, self.log
