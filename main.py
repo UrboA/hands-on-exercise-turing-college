@@ -30,7 +30,12 @@ def create_character(auto_mode=False, default_name="Hero"):
         race_choice = "1"  # Default to Human in auto mode
         print(f"Auto mode: Using default race 'Human'")
     else:
-        race_choice = input("Enter choice (1-3): ")
+        race_choice = input("Enter choice (1-3): ").strip()
+        if race_choice not in {"1", "2", "3"}:
+            race_choice = input("Invalid choice. Please enter 1, 2, or 3: ").strip()
+            if race_choice not in {"1", "2", "3"}:
+                race_choice = "1"
+                print("Invalid input again. Defaulting to Human.")
 
     print("\n")
     race = ["Human", "Elf", "Dwarf"][int(race_choice) - 1]
@@ -87,7 +92,12 @@ def main():
                 choice = "1"  # Default to fighting in auto mode
                 print(f"Auto mode: Choosing to fight goblin (combat {auto_combat_count}/{auto_combat_limit})")
         else:
-            choice = input("Enter choice (1-3): ")
+            choice = input("Enter choice (1-3): ").strip()
+            if choice not in {"1", "2", "3"}:
+                choice = input("Invalid choice. Please enter 1, 2, or 3: ").strip()
+                if choice not in {"1", "2", "3"}:
+                    choice = "2"
+                    print("Invalid input again. Showing character info.")
 
         if choice == "1":
             # Ensure the player isn't starting combat at 0 HP
