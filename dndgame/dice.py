@@ -32,12 +32,8 @@ def roll(dice_type: int, number_of_dice: int) -> int:
         roll(6, 2)  # Roll 2d6
         roll(20, 1)  # Roll 1d20
     """
-    rolls = []
-    total = 0
-    for _ in range(number_of_dice):
-        roll_result = random.randint(1, dice_type)
-        rolls.append(roll_result)
-        total += roll_result
+    rolls = [random.randint(1, dice_type) for _ in range(number_of_dice)]
+    total = sum(rolls)
     print(f"Rolling {number_of_dice}d{dice_type}: {rolls} = {total}")
     return total
 

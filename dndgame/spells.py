@@ -86,8 +86,4 @@ class SpellBook:
         Returns:
             List of spells that can be cast at the given level.
         """
-        available = []
-        for spell in self.spells:
-            if spell.level <= spell_level:
-                available.append(spell)
-        return available
+        return [spell for spell in self.spells if spell.level <= spell_level]
