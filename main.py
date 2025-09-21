@@ -4,6 +4,7 @@ import random
 from dndgame.character import Character
 from dndgame.combat import Combat
 from dndgame.dice import roll
+from dndgame.races import list_races, get_race, register_race, STAT_NAMES
 
 
 def create_character(auto_mode=False, default_name="Hero"):
@@ -22,23 +23,68 @@ def create_character(auto_mode=False, default_name="Hero"):
                 print(f"No name provided. Using default name '{name}'.")
 
     print("\nChoose your race:")
-    print("1. Human (+1 to all stats)")
-    print("2. Elf (+2 DEX)")
-    print("3. Dwarf (+2 CON)")
+    available = list_races()
+    for idx, r in enumerate(available, start=1):
+        print(f"{idx}. {r}")
+    print("C. Custom (define your own race)")
 
     if auto_mode:
-        race_choice = "1"  # Default to Human in auto mode
-        print(f"Auto mode: Using default race 'Human'")
+        race = "Human"
+        print(f"Auto mode: Using default race '{race}'")
     else:
-        race_choice = input("Enter choice (1-3): ").strip()
-        if race_choice not in {"1", "2", "3"}:
-            race_choice = input("Invalid choice. Please enter 1, 2, or 3: ").strip()
-            if race_choice not in {"1", "2", "3"}:
-                race_choice = "1"
+        selection = input("Enter race number, name, or 'C' for Custom: ").strip()
+
+        # Custom race flow
+        if selection.lower() == "c":
+            custom_name = input("Enter custom race name: ").strip() or "Custom"
+            bonuses: dict[str, int] = {}
+            print("Enter stat bonuses (blank for 0):")
+            for stat in STAT_NAMES:
+                raw = input(f"  {stat} bonus: ").strip()
+                try:
+                    bonuses[stat] = int(raw) if raw else 0
+                except ValueError:
+                    bonuses[stat] = 0
+            register_race(custom_name, bonuses)
+            race = custom_name
+        else:
+            # Try number selection
+            chosen: str | None = None
+            if selection.isdigit():
+                idx = int(selection)
+                if 1 <= idx <= len(available):
+                    chosen = available[idx - 1]
+            # Try name selection
+            if chosen is None and selection:
+                if get_race(selection):
+                    chosen = selection
+            # Reprompt once if invalid, then fallback to Human
+            if chosen is None:
+                selection2 = input("Invalid race. Enter number, name, or 'C': ").strip()
+                if selection2.lower() == "c":
+                    custom_name = input("Enter custom race name: ").strip() or "Custom"
+                    bonuses = {}
+                    print("Enter stat bonuses (blank for 0):")
+                    for stat in STAT_NAMES:
+                        raw = input(f"  {stat} bonus: ").strip()
+                        try:
+                            bonuses[stat] = int(raw) if raw else 0
+                        except ValueError:
+                            bonuses[stat] = 0
+                    register_race(custom_name, bonuses)
+                    chosen = custom_name
+                elif selection2.isdigit():
+                    idx = int(selection2)
+                    if 1 <= idx <= len(available):
+                        chosen = available[idx - 1]
+                elif selection2 and get_race(selection2):
+                    chosen = selection2
+
+            race = chosen or "Human"
+            if chosen is None:
                 print("Invalid input again. Defaulting to Human.")
 
     print("\n")
-    race = ["Human", "Elf", "Dwarf"][int(race_choice) - 1]
 
     character = Character(name, race, 10)
     character.roll_stats()

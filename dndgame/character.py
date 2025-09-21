@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dndgame.dice import roll
+from dndgame.races import apply_race_bonuses
 from dndgame.entity import Entity
 
 
@@ -76,22 +77,8 @@ class Character(Entity):
         self.defense = self.armor_class  # Defense is armor class
 
     def apply_racial_bonuses(self) -> None:
-        """Apply racial bonuses to ability scores.
-
-        Applies the standard D&D racial bonuses:
-        - Dwarf: +2 Constitution
-        - Elf: +2 Dexterity
-        - Human: +1 to all stats
-
-        Note: Only supports Dwarf, Elf, and Human races currently.
-        """
-        if self.race == "Dwarf":
-            self.stats["CON"] += 2
-        elif self.race == "Elf":
-            self.stats["DEX"] += 2
-        elif self.race == "Human":
-            for stat in self.stats:
-                self.stats[stat] += 1
+        """Apply racial bonuses to ability scores via the race registry."""
+        apply_race_bonuses(self.stats, self.race)
 
     def roll_attack(self) -> tuple[int, bool]:
         """Roll an attack for this character.
