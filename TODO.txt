@@ -17,7 +17,7 @@
     [ ] Create an Enemy class
     [ ] Refactor Character and Enemy classes to use a common Entity base class
     [ ] Update the Combat class to use the new classes
-    [ ] Replace simple_combat function with Combat class usage.
+    [ ] Replace 3 simple_combat function with Combat class usage.
     [ ] Ensure that the Goblin also attacks the player. What happens if the player has 0 HP?
 
 [ ] Convert loops to functional programming
