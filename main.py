@@ -13,7 +13,13 @@ def create_character(auto_mode=False, default_name="Hero"):
         name = default_name
         print(f"Auto mode: Using default name '{name}'")
     else:
-        name = input("Enter your character's name: ")
+        name = input("Enter your character's name: ").strip()
+        if not name:
+            # Re-prompt once if empty after stripping; then fallback to default
+            name = input("Name cannot be empty. Please enter a name: ").strip()
+            if not name:
+                name = default_name
+                print(f"No name provided. Using default name '{name}'.")
 
     print("\nChoose your race:")
     print("1. Human (+1 to all stats)")
