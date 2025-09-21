@@ -43,11 +43,14 @@ def display_character(character):
     print(f"\nHP: {character.hp}")
 
 
-def simple_combat(player, auto_mode=False):
+def simple_combat(player, auto_mode=False, max_rounds=300):
     print("\nA goblin appears!")
     goblin_hp = 5
+    rounds = 0
+    log = []
 
-    while goblin_hp > 0:
+    while goblin_hp > 0 and rounds < max_rounds:
+        rounds += 1
         print(f"\nGoblin HP: {goblin_hp}")
         print("\nYour turn!")
         print("1. Attack")
@@ -66,12 +69,27 @@ def simple_combat(player, auto_mode=False):
                 damage = roll(4, 1)
                 goblin_hp -= damage
                 print(f"You hit for {damage} damage!")
+                log.append(f"Round {rounds}: Player hits for {damage} damage")
             else:
                 print("You missed!")
+                log.append(f"Round {rounds}: Player misses")
         elif choice == "2":
-            return False
+            log.append(f"Round {rounds}: Player runs away")
+            return "Goblin", log
 
-    return True
+    # Check if max_rounds was reached
+    if rounds >= max_rounds:
+        log.append({"event": "max_rounds_reached", "rounds": rounds})
+        # Determine winner based on HP (player wins ties)
+        if player.hp >= goblin_hp:
+            winner = "Player"
+        else:
+            winner = "Goblin"
+        return winner, log
+
+    # Normal victory
+    log.append(f"Round {rounds}: Goblin defeated!")
+    return "Player", log
 
 
 def main():
@@ -88,6 +106,10 @@ def main():
     # Create character with auto mode support
     player = create_character(auto_mode=args.auto)
 
+    # Auto mode settings
+    auto_combat_limit = 10 if args.auto else None  # Limit auto mode to 10 combats
+    auto_combat_count = 0
+
     while True:
         print("\nWhat would you like to do?")
         print("1. Fight a goblin")
@@ -95,14 +117,29 @@ def main():
         print("3. Quit")
 
         if args.auto:
-            choice = "1"  # Default to fighting in auto mode
-            print("Auto mode: Choosing to fight goblin")
+            auto_combat_count += 1
+            if auto_combat_count > auto_combat_limit:
+                print(f"Auto mode: Completed {auto_combat_limit} combats, ending auto mode.")
+                print("What would you like to do?")
+                print("1. Fight a goblin")
+                print("2. View character")
+                print("3. Quit")
+                choice = "3"  # Quit after reaching combat limit
+                print("Auto mode: Choosing to quit")
+            else:
+                choice = "1"  # Default to fighting in auto mode
+                print(f"Auto mode: Choosing to fight goblin (combat {auto_combat_count}/{auto_combat_limit})")
         else:
             choice = input("Enter choice (1-3): ")
 
         if choice == "1":
-            victory = simple_combat(player, auto_mode=args.auto)
-            if victory:
+            winner, log = simple_combat(player, auto_mode=args.auto)
+
+            # Check if max_rounds was reached
+            if log and isinstance(log[-1], dict) and log[-1].get("event") == "max_rounds_reached":
+                print(f"Combat ended due to reaching maximum rounds ({log[-1]['rounds']})")
+                print(f"Winner determined by HP comparison: {winner}")
+            elif winner == "Player":
                 print("You defeated the goblin!")
             else:
                 print("You ran away!")
