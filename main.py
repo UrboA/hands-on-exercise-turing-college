@@ -8,6 +8,19 @@ from dndgame.races import list_races, get_race, register_race, STAT_NAMES
 
 
 def create_character(auto_mode=False, default_name="Hero"):
+    """Create and initialize the player's character.
+
+    Interactively (or non-interactively in --auto mode) collects a name
+    and race, applies racial bonuses, rolls initial stats, and returns a
+    ready-to-play `Character` instance.
+
+    Args:
+        auto_mode: When True, skip prompts and use safe defaults.
+        default_name: Fallback name when none is provided.
+
+    Returns:
+        Character: The initialized player character.
+    """
     print("Welcome to D&D Adventure!")
 
     if auto_mode:
@@ -93,6 +106,11 @@ def create_character(auto_mode=False, default_name="Hero"):
 
 
 def display_character(character):
+    """Print a human-readable summary of a character's stats and HP.
+
+    Args:
+        character: The character to display.
+    """
     print(f"\n{character.name} the {character.race}")
     print("\nStats:")
     for stat, value in character.stats.items():
@@ -105,6 +123,13 @@ def display_character(character):
 
 
 def main():
+    """Entry point for the D&D Adventure game CLI.
+
+    Parses command-line options, creates the player, and runs the main
+    menu loop. Key options:
+    - --seed <int>: Seed RNG for reproducible runs
+    - --auto: Non-interactive mode using sensible defaults
+    """
     parser = argparse.ArgumentParser(description="D&D Adventure Game")
     parser.add_argument("--seed", type=int, help="Set random seed for reproducible gameplay")
     parser.add_argument("--auto", action="store_true", help="Run in auto mode (skip inputs, use default name 'Hero')")
