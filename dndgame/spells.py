@@ -1,3 +1,15 @@
+"""Simple spell and spellbook primitives.
+
+Defines `Spell` and `SpellBook` with minimal behavior so the system can
+be extended later with concrete spell effects.
+
+Examples:
+    >>> from dndgame.spells import Spell, SpellBook
+    >>> sb = SpellBook(); sb.add_spell(Spell("Light", 0, "Evocation", 0))
+    >>> len(sb.get_available_spells(0)) >= 1
+    True
+"""
+
 from __future__ import annotations
 
 from dndgame.character import Character

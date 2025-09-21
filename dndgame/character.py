@@ -1,3 +1,16 @@
+"""Character implementation for the player.
+
+Defines `Character`, a concrete `Entity` with ability scores, racial
+bonuses, and player-specific attack behavior (supports crits).
+
+Examples:
+    >>> from dndgame.character import Character
+    >>> c = Character("Hero", "Human", 10)
+    >>> c.roll_stats(); c.apply_racial_bonuses()
+    >>> c.alive()
+    True
+"""
+
 from __future__ import annotations
 
 from dndgame.dice import roll
